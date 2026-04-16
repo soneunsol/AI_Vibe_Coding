@@ -36,8 +36,12 @@ const ProjectCard = ({ project }) => {
         },
       }}
     >
-      {/* 썸네일: paddingTop 56.25% = 16:9 비율 */}
-      <Box sx={{ position: 'relative', width: '100%', paddingTop: '56.25%', overflow: 'hidden', flexShrink: 0, bgcolor: 'rgba(123,47,247,0.1)' }}>
+      {/* 썸네일: paddingTop 62.5% ≈ 8:5 비율 */}
+      <Box sx={{
+        position: 'relative', width: '100%', paddingTop: '62.5%',
+        overflow: 'hidden', flexShrink: 0,
+        bgcolor: 'rgba(10,8,30,0.8)',
+      }}>
         {imgError ? (
           <Box
             sx={{
@@ -51,19 +55,28 @@ const ProjectCard = ({ project }) => {
             </Typography>
           </Box>
         ) : (
-          <Box
-            component="img"
-            src={thumbnailUrl}
-            alt={project.title}
-            onError={() => setImgError(true)}
-            sx={{
-              position: 'absolute',
-              top: 0, left: 0,
-              width: '100%', height: '100%',
-              objectFit: 'cover',
-              display: 'block',
-            }}
-          />
+          <>
+            <Box
+              component="img"
+              src={thumbnailUrl}
+              alt={project.title}
+              onError={() => setImgError(true)}
+              sx={{
+                position: 'absolute',
+                top: 0, left: 0,
+                width: '100%', height: '100%',
+                objectFit: 'cover',
+                objectPosition: 'center top',
+                display: 'block',
+              }}
+            />
+            {/* 하단 그라데이션 오버레이 */}
+            <Box sx={{
+              position: 'absolute', bottom: 0, left: 0, width: '100%', height: '35%',
+              background: 'linear-gradient(to top, rgba(10,8,30,0.7) 0%, transparent 100%)',
+              pointerEvents: 'none',
+            }} />
+          </>
         )}
       </Box>
 
