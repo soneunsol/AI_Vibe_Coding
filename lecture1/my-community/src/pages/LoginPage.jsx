@@ -1,10 +1,14 @@
 import { useState } from 'react';
 import {
   Box, Card, CardContent, Typography,
-  TextField, Button, Alert, Link,
+  TextField, Button, Alert, Link, Collapse,
 } from '@mui/material';
+import {
+  MarkEmailRead as EmailIcon,
+  Refresh as RefreshIcon,
+} from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
-import { signIn } from '../services/authService';
+import { signIn, resendConfirmationEmail } from '../services/authService';
 import Logo from '../components/common/Logo';
 
 const LoginPage = () => {
@@ -12,28 +16,57 @@ const LoginPage = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [errorType, setErrorType] = useState(''); // 'unconfirmed' | 'credentials' | 'other'
   const [loading, setLoading] = useState(false);
+  const [resendLoading, setResendLoading] = useState(false);
+  const [resendSuccess, setResendSuccess] = useState(false);
 
   const handleLogin = async () => {
     if (!email || !password) {
-      setError('아이디와 비밀번호를 입력해주세요.');
+      setError('이메일과 비밀번호를 입력해주세요.');
+      setErrorType('other');
       return;
     }
     setLoading(true);
+    setError('');
+    setErrorType('');
+    setResendSuccess(false);
     try {
       await signIn(email, password);
       navigate('/');
     } catch (err) {
       const msg = err?.message || '';
       if (msg.includes('Email not confirmed')) {
-        setError('이메일 인증이 필요합니다. 가입 시 받은 이메일의 인증 링크를 클릭해주세요.');
-      } else if (msg.includes('Invalid login credentials')) {
-        setError('아이디 또는 비밀번호가 올바르지 않습니다.');
+        setErrorType('unconfirmed');
+        setError('이메일 인증이 완료되지 않았습니다.');
+      } else if (
+        msg.includes('Invalid login credentials') ||
+        msg.includes('invalid_credentials')
+      ) {
+        setErrorType('credentials');
+        setError('이메일 또는 비밀번호가 올바르지 않습니다.');
       } else {
+        setErrorType('other');
         setError(`로그인 실패: ${msg}`);
       }
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleResendEmail = async () => {
+    if (!email) {
+      setError('이메일을 먼저 입력해주세요.');
+      return;
+    }
+    setResendLoading(true);
+    try {
+      await resendConfirmationEmail(email);
+      setResendSuccess(true);
+    } catch (err) {
+      setError(`재발송 실패: ${err?.message || '잠시 후 다시 시도해주세요.'}`);
+    } finally {
+      setResendLoading(false);
     }
   };
 
@@ -65,7 +98,44 @@ const LoginPage = () => {
             로그인
           </Typography>
 
-          {error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}
+          {/* 일반 에러 */}
+          {error && errorType !== 'unconfirmed' && (
+            <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>
+          )}
+
+          {/* 이메일 미인증 에러 - 상세 안내 */}
+          <Collapse in={errorType === 'unconfirmed'}>
+            <Alert
+              severity="warning"
+              icon={<EmailIcon />}
+              sx={{ mb: 2 }}
+            >
+              <Typography variant="body2" sx={{ fontWeight: 600, mb: 0.5 }}>
+                이메일 인증이 필요합니다
+              </Typography>
+              <Typography variant="caption" display="block" sx={{ mb: 1, lineHeight: 1.5 }}>
+                가입 시 입력한 이메일로 발송된 인증 메일의 링크를 클릭해주세요.
+                메일이 없다면 스팸함을 확인하거나, 아래에서 재발송하세요.
+              </Typography>
+              {resendSuccess ? (
+                <Alert severity="success" sx={{ py: 0.5, mt: 1 }}>
+                  인증 메일을 재발송했습니다. 메일함을 확인해주세요.
+                </Alert>
+              ) : (
+                <Button
+                  size="small"
+                  variant="outlined"
+                  color="warning"
+                  startIcon={<RefreshIcon />}
+                  onClick={handleResendEmail}
+                  disabled={resendLoading}
+                  sx={{ mt: 0.5 }}
+                >
+                  {resendLoading ? '발송 중...' : '인증 메일 재발송'}
+                </Button>
+              )}
+            </Alert>
+          </Collapse>
 
           <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
             <TextField
@@ -76,6 +146,7 @@ const LoginPage = () => {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               onKeyDown={(e) => e.key === 'Enter' && handleLogin()}
+              error={errorType === 'credentials'}
             />
             <TextField
               fullWidth
@@ -85,6 +156,8 @@ const LoginPage = () => {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               onKeyDown={(e) => e.key === 'Enter' && handleLogin()}
+              error={errorType === 'credentials'}
+              helperText={errorType === 'credentials' ? '이메일 또는 비밀번호를 확인해주세요.' : ''}
             />
             <Button
               fullWidth
