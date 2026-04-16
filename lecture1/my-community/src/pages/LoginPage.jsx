@@ -13,17 +13,17 @@ import Logo from '../components/common/Logo';
 
 const LoginPage = () => {
   const navigate = useNavigate();
-  const [email, setEmail] = useState('');
+  const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
-  const [errorType, setErrorType] = useState(''); // 'unconfirmed' | 'credentials' | 'other'
+  const [errorType, setErrorType] = useState('');
   const [loading, setLoading] = useState(false);
   const [resendLoading, setResendLoading] = useState(false);
   const [resendSuccess, setResendSuccess] = useState(false);
 
   const handleLogin = async () => {
-    if (!email || !password) {
-      setError('이메일과 비밀번호를 입력해주세요.');
+    if (!username || !password) {
+      setError('아이디와 비밀번호를 입력해주세요.');
       setErrorType('other');
       return;
     }
@@ -32,19 +32,22 @@ const LoginPage = () => {
     setErrorType('');
     setResendSuccess(false);
     try {
-      await signIn(email, password);
+      await signIn(username, password);
       navigate('/');
     } catch (err) {
       const msg = err?.message || '';
       if (msg.includes('Email not confirmed')) {
         setErrorType('unconfirmed');
         setError('이메일 인증이 완료되지 않았습니다.');
+      } else if (msg.includes('존재하지 않는 아이디')) {
+        setErrorType('credentials');
+        setError('존재하지 않는 아이디입니다.');
       } else if (
         msg.includes('Invalid login credentials') ||
         msg.includes('invalid_credentials')
       ) {
         setErrorType('credentials');
-        setError('이메일 또는 비밀번호가 올바르지 않습니다.');
+        setError('아이디 또는 비밀번호가 올바르지 않습니다.');
       } else {
         setErrorType('other');
         setError(`로그인 실패: ${msg}`);
@@ -55,13 +58,9 @@ const LoginPage = () => {
   };
 
   const handleResendEmail = async () => {
-    if (!email) {
-      setError('이메일을 먼저 입력해주세요.');
-      return;
-    }
     setResendLoading(true);
     try {
-      await resendConfirmationEmail(email);
+      await resendConfirmationEmail(username);
       setResendSuccess(true);
     } catch (err) {
       setError(`재발송 실패: ${err?.message || '잠시 후 다시 시도해주세요.'}`);
@@ -98,24 +97,18 @@ const LoginPage = () => {
             로그인
           </Typography>
 
-          {/* 일반 에러 */}
           {error && errorType !== 'unconfirmed' && (
             <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>
           )}
 
-          {/* 이메일 미인증 에러 - 상세 안내 */}
           <Collapse in={errorType === 'unconfirmed'}>
-            <Alert
-              severity="warning"
-              icon={<EmailIcon />}
-              sx={{ mb: 2 }}
-            >
+            <Alert severity="warning" icon={<EmailIcon />} sx={{ mb: 2 }}>
               <Typography variant="body2" sx={{ fontWeight: 600, mb: 0.5 }}>
                 이메일 인증이 필요합니다
               </Typography>
               <Typography variant="caption" display="block" sx={{ mb: 1, lineHeight: 1.5 }}>
                 가입 시 입력한 이메일로 발송된 인증 메일의 링크를 클릭해주세요.
-                메일이 없다면 스팸함을 확인하거나, 아래에서 재발송하세요.
+                메일이 없다면 스팸함을 확인하거나 아래에서 재발송하세요.
               </Typography>
               {resendSuccess ? (
                 <Alert severity="success" sx={{ py: 0.5, mt: 1 }}>
@@ -140,13 +133,13 @@ const LoginPage = () => {
           <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
             <TextField
               fullWidth
-              label="이메일"
-              type="email"
+              label="아이디"
               variant="outlined"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
               onKeyDown={(e) => e.key === 'Enter' && handleLogin()}
               error={errorType === 'credentials'}
+              autoComplete="username"
             />
             <TextField
               fullWidth
@@ -157,7 +150,8 @@ const LoginPage = () => {
               onChange={(e) => setPassword(e.target.value)}
               onKeyDown={(e) => e.key === 'Enter' && handleLogin()}
               error={errorType === 'credentials'}
-              helperText={errorType === 'credentials' ? '이메일 또는 비밀번호를 확인해주세요.' : ''}
+              helperText={errorType === 'credentials' ? '아이디 또는 비밀번호를 확인해주세요.' : ''}
+              autoComplete="current-password"
             />
             <Button
               fullWidth
