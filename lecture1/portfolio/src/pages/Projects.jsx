@@ -36,47 +36,29 @@ const ProjectCard = ({ project }) => {
         },
       }}
     >
-      {/* 썸네일: paddingTop 62.5% ≈ 8:5 비율 */}
+      {/* 썸네일 */}
       <Box sx={{
-        position: 'relative', width: '100%', paddingTop: '62.5%',
-        overflow: 'hidden', flexShrink: 0,
+        width: '100%', height: 180, overflow: 'hidden', flexShrink: 0,
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
         bgcolor: 'rgba(10,8,30,0.8)',
       }}>
         {imgError ? (
-          <Box
-            sx={{
-              position: 'absolute', top: 0, left: 0, width: '100%', height: '100%',
-              display: 'flex', alignItems: 'center', justifyContent: 'center',
-              background: 'linear-gradient(135deg, rgba(123,47,247,0.25), rgba(0,200,255,0.15))',
-            }}
-          >
-            <Typography variant="body2" sx={{ color: 'rgba(220,215,255,0.6)' }}>
-              미리보기 준비 중
-            </Typography>
-          </Box>
+          <Typography variant="body2" sx={{ color: 'rgba(220,215,255,0.5)' }}>
+            미리보기 준비 중
+          </Typography>
         ) : (
-          <>
-            <Box
-              component="img"
-              src={thumbnailUrl}
-              alt={project.title}
-              onError={() => setImgError(true)}
-              sx={{
-                position: 'absolute',
-                top: 0, left: 0,
-                width: '100%', height: '100%',
-                objectFit: 'cover',
-                objectPosition: 'center top',
-                display: 'block',
-              }}
-            />
-            {/* 하단 그라데이션 오버레이 */}
-            <Box sx={{
-              position: 'absolute', bottom: 0, left: 0, width: '100%', height: '35%',
-              background: 'linear-gradient(to top, rgba(10,8,30,0.7) 0%, transparent 100%)',
-              pointerEvents: 'none',
-            }} />
-          </>
+          <img
+            src={thumbnailUrl}
+            alt={project.title}
+            onError={() => setImgError(true)}
+            style={{
+              width: '100%',
+              height: '100%',
+              objectFit: 'cover',
+              objectPosition: 'center top',
+              display: 'block',
+            }}
+          />
         )}
       </Box>
 
