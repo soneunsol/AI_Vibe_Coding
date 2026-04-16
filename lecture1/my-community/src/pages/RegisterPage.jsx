@@ -21,7 +21,6 @@ const PASSWORD_RULES = [
 const RegisterPage = () => {
   const navigate = useNavigate();
   const [username, setUsername] = useState('');
-  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
@@ -38,7 +37,7 @@ const RegisterPage = () => {
   const allRulesPass = PASSWORD_RULES.every((r) => r.test(password));
 
   const handleRegister = async () => {
-    if (!username || !email || !password) {
+    if (!username || !password) {
       setError('모든 항목을 입력해주세요.');
       return;
     }
@@ -52,7 +51,7 @@ const RegisterPage = () => {
     }
     setLoading(true);
     try {
-      await signUp(email, password, username);
+      await signUp(username.trim(), password);
       setSuccess(true);
     } catch (err) {
       setError(err.message || '회원가입에 실패했습니다.');
@@ -70,22 +69,14 @@ const RegisterPage = () => {
     p: 2,
   };
 
-  const cardSx = {
-    width: '100%',
-    borderRadius: 3,
-    boxShadow: '0 20px 60px rgba(99,102,241,0.12), 0 4px 16px rgba(0,0,0,0.06)',
-    border: '1px solid rgba(99,102,241,0.1)',
-    elevation: 0,
-  };
-
   if (success) {
     return (
       <Box sx={wrapperSx}>
-        <Card elevation={0} sx={{ ...cardSx, maxWidth: 420 }}>
+        <Card elevation={0} sx={{ width: '100%', maxWidth: 420, borderRadius: 3, boxShadow: '0 20px 60px rgba(99,102,241,0.12)', border: '1px solid rgba(99,102,241,0.1)' }}>
           <CardContent sx={{ p: { xs: 3, sm: 4 } }}>
             <Logo variant="login" />
             <Alert severity="success" sx={{ mb: 2.5 }}>
-              회원가입이 완료되었습니다! 이메일을 확인하여 인증해주세요.
+              회원가입이 완료되었습니다! 바로 로그인하세요.
             </Alert>
             <Button fullWidth variant="contained" size="large" onClick={() => navigate('/login')}>
               로그인 페이지로 이동
@@ -98,7 +89,7 @@ const RegisterPage = () => {
 
   return (
     <Box sx={wrapperSx}>
-      <Card elevation={0} sx={{ ...cardSx, maxWidth: 460 }}>
+      <Card elevation={0} sx={{ width: '100%', maxWidth: 460, borderRadius: 3, boxShadow: '0 20px 60px rgba(99,102,241,0.12)', border: '1px solid rgba(99,102,241,0.1)' }}>
         <CardContent sx={{ p: { xs: 3, sm: 4 } }}>
           <Logo variant="login" />
 
@@ -113,10 +104,11 @@ const RegisterPage = () => {
             <Box sx={{ display: 'flex', gap: 1 }}>
               <TextField
                 fullWidth
-                label="닉네임"
+                label="아이디"
                 variant="outlined"
                 value={username}
                 onChange={(e) => { setUsername(e.target.value); setUsernameStatus(null); }}
+                autoComplete="username"
               />
               <Button
                 variant="outlined"
@@ -128,20 +120,11 @@ const RegisterPage = () => {
               </Button>
             </Box>
             {usernameStatus === 'available' && (
-              <Alert severity="success" sx={{ py: 0.5 }}>사용 가능한 닉네임입니다.</Alert>
+              <Alert severity="success" sx={{ py: 0.5 }}>사용 가능한 아이디입니다.</Alert>
             )}
             {usernameStatus === 'taken' && (
-              <Alert severity="error" sx={{ py: 0.5 }}>이미 사용 중인 닉네임입니다.</Alert>
+              <Alert severity="error" sx={{ py: 0.5 }}>이미 사용 중인 아이디입니다.</Alert>
             )}
-
-            <TextField
-              fullWidth
-              label="이메일"
-              type="email"
-              variant="outlined"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-            />
 
             <TextField
               fullWidth
@@ -150,6 +133,7 @@ const RegisterPage = () => {
               variant="outlined"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
+              autoComplete="new-password"
             />
             <Box>
               <Typography variant="caption" color="text.secondary" sx={{ mb: 1, display: 'block', fontWeight: 500 }}>

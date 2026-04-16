@@ -1,18 +1,14 @@
 import { supabase } from './supabase';
 
-const getRedirectTo = () => {
-  const base = import.meta.env.BASE_URL || '/';
-  return `${window.location.origin}${base}`;
-};
+// 아이디로 내부 이메일 자동 생성 (Supabase auth 요구사항 대응)
+const toFakeEmail = (username) => `${username}@devdesignhub.app`;
 
-export const signUp = async (email, password, username) => {
+export const signUp = async (username, password) => {
+  const email = toFakeEmail(username);
   const { data, error } = await supabase.auth.signUp({
     email,
     password,
-    options: {
-      data: { username },
-      emailRedirectTo: getRedirectTo(),
-    },
+    options: { data: { username } },
   });
   if (error) throw error;
   return data;
