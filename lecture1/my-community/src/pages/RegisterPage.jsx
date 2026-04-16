@@ -9,6 +9,7 @@ import {
 } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 import { signUp, checkUsernameAvailable } from '../services/authService';
+import Logo from '../components/common/Logo';
 
 const PASSWORD_RULES = [
   { label: '8자 이상', test: (pw) => pw.length >= 8 },
@@ -25,7 +26,7 @@ const RegisterPage = () => {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [usernameStatus, setUsernameStatus] = useState(null); // null | 'available' | 'taken' | 'checking'
+  const [usernameStatus, setUsernameStatus] = useState(null);
 
   const handleCheckUsername = async () => {
     if (!username.trim()) return;
@@ -60,16 +61,34 @@ const RegisterPage = () => {
     }
   };
 
+  const wrapperSx = {
+    minHeight: '100vh',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    background: 'linear-gradient(135deg, #eef2ff 0%, #f5f3ff 50%, #fce7f3 100%)',
+    p: 2,
+  };
+
+  const cardSx = {
+    width: '100%',
+    borderRadius: 3,
+    boxShadow: '0 20px 60px rgba(99,102,241,0.12), 0 4px 16px rgba(0,0,0,0.06)',
+    border: '1px solid rgba(99,102,241,0.1)',
+    elevation: 0,
+  };
+
   if (success) {
     return (
-      <Box sx={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', bgcolor: 'background.default' }}>
-        <Card elevation={4} sx={{ width: '100%', maxWidth: 400, p: 2 }}>
-          <CardContent>
-            <Alert severity="success" sx={{ mb: 2 }}>
+      <Box sx={wrapperSx}>
+        <Card elevation={0} sx={{ ...cardSx, maxWidth: 420 }}>
+          <CardContent sx={{ p: { xs: 3, sm: 4 } }}>
+            <Logo variant="login" />
+            <Alert severity="success" sx={{ mb: 2.5 }}>
               회원가입이 완료되었습니다! 이메일을 확인하여 인증해주세요.
             </Alert>
-            <Button fullWidth variant="contained" onClick={() => navigate('/login')}>
-              로그인 페이지로
+            <Button fullWidth variant="contained" size="large" onClick={() => navigate('/login')}>
+              로그인 페이지로 이동
             </Button>
           </CardContent>
         </Card>
@@ -78,10 +97,12 @@ const RegisterPage = () => {
   }
 
   return (
-    <Box sx={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', bgcolor: 'background.default' }}>
-      <Card elevation={4} sx={{ width: '100%', maxWidth: 440, p: 2 }}>
-        <CardContent>
-          <Typography variant="h5" sx={{ mb: 3, fontWeight: 700, textAlign: 'center' }}>
+    <Box sx={wrapperSx}>
+      <Card elevation={0} sx={{ ...cardSx, maxWidth: 460 }}>
+        <CardContent sx={{ p: { xs: 3, sm: 4 } }}>
+          <Logo variant="login" />
+
+          <Typography variant="h5" sx={{ mb: 3, fontWeight: 700, textAlign: 'center', color: 'text.primary' }}>
             회원가입
           </Typography>
 
@@ -92,7 +113,7 @@ const RegisterPage = () => {
             <Box sx={{ display: 'flex', gap: 1 }}>
               <TextField
                 fullWidth
-                label="아이디 (닉네임)"
+                label="닉네임"
                 variant="outlined"
                 value={username}
                 onChange={(e) => { setUsername(e.target.value); setUsernameStatus(null); }}
@@ -107,10 +128,10 @@ const RegisterPage = () => {
               </Button>
             </Box>
             {usernameStatus === 'available' && (
-              <Alert severity="success" sx={{ py: 0.5 }}>사용 가능한 아이디입니다.</Alert>
+              <Alert severity="success" sx={{ py: 0.5 }}>사용 가능한 닉네임입니다.</Alert>
             )}
             {usernameStatus === 'taken' && (
-              <Alert severity="error" sx={{ py: 0.5 }}>이미 사용 중인 아이디입니다.</Alert>
+              <Alert severity="error" sx={{ py: 0.5 }}>이미 사용 중인 닉네임입니다.</Alert>
             )}
 
             <TextField
@@ -122,7 +143,6 @@ const RegisterPage = () => {
               onChange={(e) => setEmail(e.target.value)}
             />
 
-            {/* 비밀번호 + 규칙 */}
             <TextField
               fullWidth
               label="비밀번호"
@@ -132,7 +152,7 @@ const RegisterPage = () => {
               onChange={(e) => setPassword(e.target.value)}
             />
             <Box>
-              <Typography variant="caption" color="text.secondary" sx={{ mb: 0.5, display: 'block' }}>
+              <Typography variant="caption" color="text.secondary" sx={{ mb: 1, display: 'block', fontWeight: 500 }}>
                 비밀번호 규칙
               </Typography>
               <Stack direction="row" flexWrap="wrap" gap={0.5}>
@@ -160,12 +180,17 @@ const RegisterPage = () => {
               size="large"
               onClick={handleRegister}
               disabled={loading}
+              sx={{ py: 1.4, fontSize: '1rem' }}
             >
               {loading ? '처리 중...' : '회원가입'}
             </Button>
-            <Typography variant="body2" sx={{ textAlign: 'center' }}>
+            <Typography variant="body2" sx={{ textAlign: 'center', color: 'text.secondary' }}>
               이미 계정이 있으신가요?{' '}
-              <Link component="button" onClick={() => navigate('/login')}>
+              <Link
+                component="button"
+                onClick={() => navigate('/login')}
+                sx={{ color: 'primary.main', fontWeight: 600 }}
+              >
                 로그인
               </Link>
             </Typography>

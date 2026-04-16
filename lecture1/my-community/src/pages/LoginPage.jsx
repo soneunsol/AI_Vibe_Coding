@@ -38,12 +38,30 @@ const LoginPage = () => {
   };
 
   return (
-    <Box sx={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', bgcolor: 'background.default' }}>
-      <Card elevation={4} sx={{ width: '100%', maxWidth: 400, p: 2 }}>
-        <CardContent>
+    <Box
+      sx={{
+        minHeight: '100vh',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        background: 'linear-gradient(135deg, #eef2ff 0%, #f5f3ff 50%, #fce7f3 100%)',
+        p: 2,
+      }}
+    >
+      <Card
+        elevation={0}
+        sx={{
+          width: '100%',
+          maxWidth: 420,
+          borderRadius: 3,
+          boxShadow: '0 20px 60px rgba(99,102,241,0.12), 0 4px 16px rgba(0,0,0,0.06)',
+          border: '1px solid rgba(99,102,241,0.1)',
+        }}
+      >
+        <CardContent sx={{ p: { xs: 3, sm: 4 } }}>
           <Logo variant="login" />
 
-          <Typography variant="h5" sx={{ mb: 3, fontWeight: 700, textAlign: 'center' }}>
+          <Typography variant="h5" sx={{ mb: 3, fontWeight: 700, textAlign: 'center', color: 'text.primary' }}>
             로그인
           </Typography>
 
@@ -52,7 +70,7 @@ const LoginPage = () => {
           <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
             <TextField
               fullWidth
-              label="아이디 (이메일)"
+              label="이메일"
               type="email"
               variant="outlined"
               value={email}
@@ -68,13 +86,24 @@ const LoginPage = () => {
               onChange={(e) => setPassword(e.target.value)}
               onKeyDown={(e) => e.key === 'Enter' && handleLogin()}
             />
-            <Button fullWidth variant="contained" size="large" onClick={handleLogin} disabled={loading}>
+            <Button
+              fullWidth
+              variant="contained"
+              size="large"
+              onClick={handleLogin}
+              disabled={loading}
+              sx={{ py: 1.4, fontSize: '1rem' }}
+            >
               {loading ? '로그인 중...' : '로그인'}
             </Button>
-            <Typography variant="body2" sx={{ textAlign: 'center' }}>
+            <Typography variant="body2" sx={{ textAlign: 'center', color: 'text.secondary' }}>
               계정이 없으신가요?{' '}
-              <Link component="button" onClick={() => navigate('/register')}>
-                회원가입하러가기
+              <Link
+                component="button"
+                onClick={() => navigate('/register')}
+                sx={{ color: 'primary.main', fontWeight: 600 }}
+              >
+                회원가입하기
               </Link>
             </Typography>
           </Box>
