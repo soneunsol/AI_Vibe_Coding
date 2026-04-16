@@ -1,132 +1,267 @@
-import React from 'react';
-import { Box, Typography, Divider, Card, CardContent, Chip } from '@mui/material';
-import RocketLaunchIcon from '@mui/icons-material/RocketLaunch';
-import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
-import WebIcon from '@mui/icons-material/Web';
+import React, { useState, useEffect } from 'react';
+import {
+  Box,
+  Typography,
+  Card,
+  CardMedia,
+  CardContent,
+  CardActions,
+  Chip,
+  Button,
+  Skeleton,
+  Grid,
+} from '@mui/material';
+import OpenInNewIcon from '@mui/icons-material/OpenInNew';
+import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
+import { supabase } from '../services/supabase';
 
-const PROJECTS = [
-  {
-    id: 1,
-    icon: <RocketLaunchIcon sx={{ color: '#c084fc', fontSize: 28 }} />,
-    title: 'AI바이브코딩웹 포트폴리오',
-    description:
-      'React + MUI + Vite 기반의 포트폴리오 사이트. 오로라 배경 애니메이션, 글래스모피즘 카드 디자인, 반응형 네비게이션을 구현. GitHub Actions를 통한 자동 배포(CI/CD) 파이프라인 구축.',
-    tags: ['React', 'MUI', 'Vite', 'GitHub Actions', 'GitHub Pages'],
-    gradient: 'rgba(123, 47, 247, 0.15)',
-  },
-  {
-    id: 2,
-    icon: <AutoAwesomeIcon sx={{ color: '#00c8ff', fontSize: 28 }} />,
-    title: '오로라 랜딩 페이지',
-    description:
-      '순수 HTML/CSS/JS로 구현한 인터랙티브 랜딩 페이지. 별빛 트윈클 애니메이션(180개 별), 오로라 플로우 이펙트, 플로팅 SVG 기하학적 오브, 글래스모피즘 카드를 포함한 완성도 높은 UI.',
-    tags: ['HTML5', 'CSS3', 'JavaScript', 'SVG', 'Animation'],
-    gradient: 'rgba(0, 200, 255, 0.12)',
-  },
-  {
-    id: 3,
-    icon: <WebIcon sx={{ color: '#ff3cac', fontSize: 28 }} />,
-    title: 'React MUI 컴포넌트 라이브러리',
-    description:
-      'MUI 디자인 시스템을 기반으로 한 재사용 컴포넌트 모음. 다크 테마, 글래스모피즘 스타일의 Card, NavBar, Button 등 커스텀 컴포넌트 설계. 코드 컨벤션 가이드 준수.',
-    tags: ['React', 'MUI', 'Design System', 'TypeScript'],
-    gradient: 'rgba(255, 60, 172, 0.12)',
-  },
-];
+const ProjectCard = ({ project }) => {
+  const thumbnailUrl = `https://image.thum.io/get/${project.detail_url}`;
+  const formattedDate = new Date(project.created_at).toLocaleDateString('ko-KR', {
+    year: 'numeric',
+    month: 'long',
+  });
 
-const Projects = () => (
-  <Box
-    sx={{
-      minHeight: 'calc(100vh - 64px)',
-      display: 'flex',
-      justifyContent: 'center',
-      px: 2,
-      py: 6,
-    }}
-  >
-    <Box sx={{ maxWidth: 720, width: '100%' }}>
-
-      {/* 헤더 */}
-      <Box sx={{ textAlign: 'center', mb: 6 }}>
-        <Typography
-          variant="caption"
-          sx={{ letterSpacing: 4, color: '#00c8ff', display: 'block', mb: 1, textTransform: 'uppercase' }}
-        >
-          What I've Built
-        </Typography>
-        <Typography
-          variant="h1"
+  return (
+    <Card
+      sx={{
+        height: '100%',
+        display: 'flex',
+        flexDirection: 'column',
+        transition: 'transform 0.25s ease, box-shadow 0.25s ease',
+        '&:hover': {
+          transform: 'scale(1.03)',
+          boxShadow: '0 12px 40px rgba(123,47,247,0.45)',
+        },
+      }}
+    >
+      {/* 썸네일 이미지 */}
+      <Box sx={{ position: 'relative', overflow: 'hidden', aspectRatio: '16/9' }}>
+        <CardMedia
+          component="img"
+          image={thumbnailUrl}
+          alt={project.title}
           sx={{
-            color: '#fff',
-            fontWeight: 700,
-            textShadow: '0 0 20px rgba(123,47,247,0.5)',
-            mb: 2,
+            width: '100%',
+            height: '100%',
+            objectFit: 'cover',
+            display: 'block',
           }}
-        >
-          Projects
-        </Typography>
-        <Box
-          sx={{
-            width: 56,
-            height: 2,
-            background: 'linear-gradient(90deg, #7b2ff7, #00c8ff)',
-            borderRadius: 1,
-            mx: 'auto',
-            mb: 2,
+          onError={(e) => {
+            e.target.style.display = 'none';
+            e.target.nextSibling.style.display = 'flex';
           }}
         />
-        <Typography variant="body1" sx={{ color: 'rgba(220,215,255,0.7)' }}>
-          AI 바이브코딩으로 완성한 프로젝트들을 소개합니다.
-        </Typography>
+        {/* 이미지 로드 실패 시 폴백 */}
+        <Box
+          sx={{
+            display: 'none',
+            position: 'absolute',
+            inset: 0,
+            alignItems: 'center',
+            justifyContent: 'center',
+            background: 'linear-gradient(135deg, rgba(123,47,247,0.2), rgba(0,200,255,0.15))',
+          }}
+        >
+          <Typography variant="body2" sx={{ color: 'rgba(220,215,255,0.6)' }}>
+            미리보기 준비 중
+          </Typography>
+        </Box>
       </Box>
 
-      {/* 프로젝트 카드들 */}
-      <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
-        {PROJECTS.map((project) => (
-          <Card key={project.id}>
-            <CardContent sx={{ p: 4 }}>
-              <Box
-                sx={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: 1.5,
-                  mb: 2,
-                  p: 1.5,
-                  borderRadius: 2,
-                  background: project.gradient,
-                  width: 'fit-content',
-                }}
-              >
-                {project.icon}
-                <Typography variant="h3" sx={{ color: '#fff', fontWeight: 600 }}>
-                  {project.title}
-                </Typography>
-              </Box>
-              <Divider sx={{ mb: 2 }} />
-              <Typography variant="body1" sx={{ color: 'rgba(220,215,255,0.85)', lineHeight: 1.9, mb: 3 }}>
-                {project.description}
-              </Typography>
-              <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap' }}>
-                {project.tags.map((tag) => (
-                  <Chip
-                    key={tag}
-                    label={tag}
-                    size="small"
-                    sx={{
-                      background: 'rgba(255,255,255,0.06)',
-                      border: '1px solid rgba(255,255,255,0.14)',
-                      color: 'rgba(210,200,240,0.9)',
-                      fontSize: '0.78rem',
-                    }}
-                  />
-                ))}
-              </Box>
-            </CardContent>
-          </Card>
-        ))}
+      <CardContent sx={{ flex: 1, p: 2.5 }}>
+        {/* 프로젝트 이름 */}
+        <Typography
+          variant="h3"
+          sx={{ color: '#fff', fontWeight: 600, mb: 1, fontSize: '1.05rem', lineHeight: 1.4 }}
+        >
+          {project.title}
+        </Typography>
+
+        {/* 한 줄 설명 */}
+        <Typography
+          variant="body2"
+          sx={{
+            color: 'rgba(220,215,255,0.7)',
+            mb: 2,
+            lineHeight: 1.6,
+            display: '-webkit-box',
+            WebkitLineClamp: 3,
+            WebkitBoxOrient: 'vertical',
+            overflow: 'hidden',
+          }}
+        >
+          {project.description}
+        </Typography>
+
+        {/* 기술 스택 아이콘형 칩 */}
+        <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.75, mb: 2 }}>
+          {project.tech_stack?.map((tech) => (
+            <Chip
+              key={tech}
+              label={tech}
+              size="small"
+              sx={{
+                background: 'rgba(123,47,247,0.18)',
+                border: '1px solid rgba(123,47,247,0.4)',
+                color: '#c084fc',
+                fontSize: '0.72rem',
+                height: 22,
+              }}
+            />
+          ))}
+        </Box>
+
+        {/* 작업 날짜 */}
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+          <CalendarTodayIcon sx={{ fontSize: 13, color: 'rgba(220,215,255,0.4)' }} />
+          <Typography variant="caption" sx={{ color: 'rgba(220,215,255,0.45)' }}>
+            {formattedDate}
+          </Typography>
+        </Box>
+      </CardContent>
+
+      {/* View Details 버튼 */}
+      <CardActions sx={{ px: 2.5, pb: 2.5, pt: 0 }}>
+        <Button
+          variant="outlined"
+          size="small"
+          endIcon={<OpenInNewIcon sx={{ fontSize: 14 }} />}
+          href={project.detail_url}
+          target="_blank"
+          rel="noopener noreferrer"
+          fullWidth
+          sx={{
+            borderColor: 'rgba(0,200,255,0.4)',
+            color: '#00c8ff',
+            fontSize: '0.8rem',
+            '&:hover': {
+              borderColor: '#00c8ff',
+              background: 'rgba(0,200,255,0.08)',
+            },
+          }}
+        >
+          View Details
+        </Button>
+      </CardActions>
+    </Card>
+  );
+};
+
+const ProjectSkeleton = () => (
+  <Card sx={{ height: '100%' }}>
+    <Skeleton variant="rectangular" sx={{ aspectRatio: '16/9', width: '100%' }} />
+    <CardContent sx={{ p: 2.5 }}>
+      <Skeleton variant="text" width="70%" height={24} sx={{ mb: 1 }} />
+      <Skeleton variant="text" width="100%" />
+      <Skeleton variant="text" width="90%" />
+      <Skeleton variant="text" width="60%" sx={{ mb: 2 }} />
+      <Box sx={{ display: 'flex', gap: 0.75 }}>
+        <Skeleton variant="rounded" width={60} height={22} />
+        <Skeleton variant="rounded" width={70} height={22} />
+        <Skeleton variant="rounded" width={50} height={22} />
+      </Box>
+    </CardContent>
+  </Card>
+);
+
+const Projects = () => {
+  const [projects, setProjects] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchProjects = async () => {
+      try {
+        const { data, error: supabaseError } = await supabase
+          .from('projects')
+          .select('*')
+          .eq('is_published', true)
+          .order('sort_order', { ascending: true });
+
+        if (supabaseError) throw supabaseError;
+        setProjects(data || []);
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProjects();
+  }, []);
+
+  return (
+    <Box
+      sx={{
+        minHeight: 'calc(100vh - 64px)',
+        display: 'flex',
+        justifyContent: 'center',
+        px: 2,
+        py: 6,
+      }}
+    >
+      <Box sx={{ maxWidth: 1200, width: '100%' }}>
+
+        {/* 헤더 */}
+        <Box sx={{ textAlign: 'center', mb: 6 }}>
+          <Typography
+            variant="caption"
+            sx={{ letterSpacing: 4, color: '#00c8ff', display: 'block', mb: 1, textTransform: 'uppercase' }}
+          >
+            What I've Built
+          </Typography>
+          <Typography
+            variant="h1"
+            sx={{
+              color: '#fff',
+              fontWeight: 700,
+              textShadow: '0 0 20px rgba(123,47,247,0.5)',
+              mb: 2,
+            }}
+          >
+            Projects
+          </Typography>
+          <Box
+            sx={{
+              width: 56,
+              height: 2,
+              background: 'linear-gradient(90deg, #7b2ff7, #00c8ff)',
+              borderRadius: 1,
+              mx: 'auto',
+              mb: 2,
+            }}
+          />
+          <Typography variant="body1" sx={{ color: 'rgba(220,215,255,0.7)' }}>
+            AI 바이브코딩으로 완성한 프로젝트들을 소개합니다.
+          </Typography>
+        </Box>
+
+        {/* 에러 */}
+        {error && (
+          <Typography sx={{ color: 'error.main', textAlign: 'center', mb: 3 }}>
+            프로젝트를 불러오는 중 오류가 발생했습니다: {error}
+          </Typography>
+        )}
+
+        {/* 카드 그리드: 데스크탑 4열 / 태블릿 2열 / 모바일 1열 */}
+        <Grid container spacing={3}>
+          {loading
+            ? Array.from({ length: 4 }).map((_, i) => (
+                <Grid key={i} size={{ xs: 12, sm: 6, md: 3 }}>
+                  <ProjectSkeleton />
+                </Grid>
+              ))
+            : projects.map((project) => (
+                <Grid key={project.id} size={{ xs: 12, sm: 6, md: 3 }}>
+                  <ProjectCard project={project} />
+                </Grid>
+              ))}
+        </Grid>
+
       </Box>
     </Box>
-  </Box>
-);
+  );
+};
 
 export default Projects;

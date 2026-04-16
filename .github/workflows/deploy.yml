@@ -32,6 +32,9 @@ jobs:
 
       - name: 포트폴리오 빌드
         working-directory: lecture1/portfolio
+        env:
+          VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
+          VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
         run: npm run build
 
       - name: my-community 의존성 설치
