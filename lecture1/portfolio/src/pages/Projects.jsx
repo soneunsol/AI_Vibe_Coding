@@ -15,7 +15,7 @@ import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 import { supabase } from '../services/supabase';
 
 const ProjectCard = ({ project }) => {
-  const thumbnailUrl = `https://image.thum.io/get/${project.detail_url}`;
+  const thumbnailUrl = project.thumbnail_url || `https://image.thum.io/get/${project.detail_url}`;
   const [imgError, setImgError] = useState(false);
 
   const formattedDate = new Date(project.created_at).toLocaleDateString('ko-KR', {
@@ -60,7 +60,7 @@ const ProjectCard = ({ project }) => {
               top: 0, left: 0,
               width: '100%', height: '100%',
               objectFit: 'cover',
-              objectPosition: 'center top',
+              objectPosition: project.thumbnail_position || 'center top',
               display: 'block',
             }}
           />
