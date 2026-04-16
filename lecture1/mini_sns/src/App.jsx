@@ -34,21 +34,14 @@ const App = () => {
       <Routes>
         <Route path="/login" element={<LoginPage />} />
         <Route path="/signup" element={<SignUpPage />} />
-        <Route
-          path="/"
-          element={
-            <ProtectedRoute>
-              <MainLayout />
-            </ProtectedRoute>
-          }
-        >
+        <Route path="/" element={<MainLayout />}>
           <Route index element={<HomePage />} />
-          <Route path="create" element={<CreatePostPage />} />
-          <Route path="mypage" element={<MyPage />} />
-          <Route path="notifications" element={<NotificationsPage />} />
-          <Route path="gathering" element={<GatheringPage />} />
-          <Route path="chat" element={<ChatPage />} />
-          <Route path="chat/:roomId" element={<ChatRoomPage />} />
+          <Route path="create" element={<ProtectedRoute><CreatePostPage /></ProtectedRoute>} />
+          <Route path="mypage" element={<ProtectedRoute><MyPage /></ProtectedRoute>} />
+          <Route path="notifications" element={<ProtectedRoute><NotificationsPage /></ProtectedRoute>} />
+          <Route path="gathering" element={<ProtectedRoute><GatheringPage /></ProtectedRoute>} />
+          <Route path="chat" element={<ProtectedRoute><ChatPage /></ProtectedRoute>} />
+          <Route path="chat/:roomId" element={<ProtectedRoute><ChatRoomPage /></ProtectedRoute>} />
         </Route>
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
