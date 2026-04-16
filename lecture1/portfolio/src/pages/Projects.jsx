@@ -3,7 +3,6 @@ import {
   Box,
   Typography,
   Card,
-  CardMedia,
   CardContent,
   CardActions,
   Chip,
@@ -16,7 +15,10 @@ import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 import { supabase } from '../services/supabase';
 
 const ProjectCard = ({ project }) => {
-  const thumbnailUrl = `https://image.thum.io/get/${project.detail_url}`;
+  const thumbnailUrl = `https://image.thum.io/get/width/600/crop/400/${project.detail_url}`;
+  const [imgError, setImgError] = useState(false);
+  const [imgLoaded, setImgLoaded] = useState(false);
+
   const formattedDate = new Date(project.created_at).toLocaleDateString('ko-KR', {
     year: 'numeric',
     month: 'long',
@@ -35,38 +37,48 @@ const ProjectCard = ({ project }) => {
         },
       }}
     >
-      {/* 썸네일 이미지 */}
-      <Box sx={{ position: 'relative', overflow: 'hidden', aspectRatio: '16/9' }}>
-        <CardMedia
-          component="img"
-          image={thumbnailUrl}
-          alt={project.title}
-          sx={{
-            width: '100%',
-            height: '100%',
-            objectFit: 'cover',
-            display: 'block',
-          }}
-          onError={(e) => {
-            e.target.style.display = 'none';
-            e.target.nextSibling.style.display = 'flex';
-          }}
-        />
-        {/* 이미지 로드 실패 시 폴백 */}
-        <Box
-          sx={{
-            display: 'none',
-            position: 'absolute',
-            inset: 0,
-            alignItems: 'center',
-            justifyContent: 'center',
-            background: 'linear-gradient(135deg, rgba(123,47,247,0.2), rgba(0,200,255,0.15))',
-          }}
-        >
-          <Typography variant="body2" sx={{ color: 'rgba(220,215,255,0.6)' }}>
-            미리보기 준비 중
-          </Typography>
-        </Box>
+      {/* 썸네일: paddingTop 56.25% = 16:9 비율 */}
+      <Box sx={{ position: 'relative', width: '100%', paddingTop: '56.25%', overflow: 'hidden', flexShrink: 0 }}>
+        {/* 로딩 스켈레톤 */}
+        {!imgLoaded && !imgError && (
+          <Skeleton
+            variant="rectangular"
+            sx={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }}
+          />
+        )}
+        {/* 폴백 배경 */}
+        {imgError && (
+          <Box
+            sx={{
+              position: 'absolute', top: 0, left: 0, width: '100%', height: '100%',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              background: 'linear-gradient(135deg, rgba(123,47,247,0.25), rgba(0,200,255,0.15))',
+            }}
+          >
+            <Typography variant="body2" sx={{ color: 'rgba(220,215,255,0.6)' }}>
+              미리보기 준비 중
+            </Typography>
+          </Box>
+        )}
+        {/* 실제 이미지 */}
+        {!imgError && (
+          <Box
+            component="img"
+            src={thumbnailUrl}
+            alt={project.title}
+            onLoad={() => setImgLoaded(true)}
+            onError={() => { setImgError(true); setImgLoaded(true); }}
+            sx={{
+              position: 'absolute',
+              top: 0, left: 0,
+              width: '100%', height: '100%',
+              objectFit: 'cover',
+              display: 'block',
+              opacity: imgLoaded ? 1 : 0,
+              transition: 'opacity 0.3s ease',
+            }}
+          />
+        )}
       </Box>
 
       <CardContent sx={{ flex: 1, p: 2.5 }}>
