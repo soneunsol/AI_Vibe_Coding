@@ -39,21 +39,26 @@ const ProjectCard = ({ project }) => {
       {/* 썸네일 */}
       <Box sx={{
         width: '100%', height: 180, overflow: 'hidden', flexShrink: 0,
-        display: 'flex', alignItems: 'center', justifyContent: 'center',
-        bgcolor: 'rgba(10,8,30,0.8)',
+        position: 'relative', bgcolor: 'rgba(10,8,30,0.8)',
       }}>
         {imgError ? (
-          <Typography variant="body2" sx={{ color: 'rgba(220,215,255,0.5)' }}>
-            미리보기 준비 중
-          </Typography>
+          <Box sx={{
+            position: 'absolute', inset: 0,
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+          }}>
+            <Typography variant="body2" sx={{ color: 'rgba(220,215,255,0.5)' }}>
+              미리보기 준비 중
+            </Typography>
+          </Box>
         ) : (
           <img
             src={thumbnailUrl}
             alt={project.title}
             onError={() => setImgError(true)}
             style={{
-              width: '100%',
-              height: '100%',
+              position: 'absolute',
+              top: 0, left: 0,
+              width: '100%', height: '100%',
               objectFit: 'cover',
               objectPosition: 'center top',
               display: 'block',
