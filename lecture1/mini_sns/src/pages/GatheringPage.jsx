@@ -49,9 +49,9 @@ const MOCK_GATHERINGS = [
 
 const GatheringPage = () => {
   return (
-    <Box sx={{ minHeight: '100vh', bgcolor: 'background.default', px: 2, py: 2 }}>
+    <Box sx={{ bgcolor: 'background.default', px: 2, py: 2 }}>
       <Box sx={{ mb: 2 }}>
-        <Typography variant="h3" fontWeight={700}>친구 모임 찾기</Typography>
+        <Typography variant="h6" fontWeight={700}>친구 모임 찾기</Typography>
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5, mt: 0.5 }}>
           <LocationOnIcon sx={{ fontSize: 14, color: '#FF6B35' }} />
           <Typography variant="caption" color="text.secondary">내 위치 기준 5km 이내</Typography>
@@ -70,7 +70,7 @@ const GatheringPage = () => {
               <Typography variant="caption" color="text.secondary">{gathering.distance}</Typography>
             </Box>
 
-            <Typography variant="h3" fontWeight={700} sx={{ mb: 1.5 }}>{gathering.title}</Typography>
+            <Typography variant="subtitle1" fontWeight={700} sx={{ mb: 1.5 }}>{gathering.title}</Typography>
 
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5, mb: 0.5 }}>
               <LocationOnIcon sx={{ fontSize: 14, color: '#999' }} />

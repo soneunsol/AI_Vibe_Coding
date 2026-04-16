@@ -50,7 +50,7 @@ jobs:
 
       - name: mini_sns 의존성 설치
         working-directory: lecture1/mini_sns
-        run: npm install
+        run: npm ci
 
       - name: mini_sns 빌드
         working-directory: lecture1/mini_sns

@@ -4,18 +4,13 @@
   padding: 0;
 }
 
-body {
+html, body {
+  height: 100%;
   background-color: #FFF8F5;
-  min-height: 100vh;
-  max-width: 480px;
-  margin: 0 auto;
   font-family: 'Roboto', 'Helvetica', 'Arial', sans-serif;
 }
 
 #root {
-  max-width: 480px;
-  margin: 0 auto;
-  min-height: 100vh;
-  position: relative;
+  height: 100%;
   background-color: #FFF8F5;
 }

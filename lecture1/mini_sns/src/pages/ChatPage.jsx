@@ -48,9 +48,9 @@ const ChatPage = () => {
   const navigate = useNavigate();
 
   return (
-    <Box sx={{ minHeight: '100vh', bgcolor: 'background.default' }}>
+    <Box sx={{ bgcolor: 'background.default' }}>
       <Box sx={{ px: 2, py: 2, bgcolor: 'white', borderBottom: '1px solid rgba(255,107,53,0.15)' }}>
-        <Typography variant="h3" fontWeight={700}>채팅</Typography>
+        <Typography variant="h6" fontWeight={700}>채팅</Typography>
       </Box>
 
       <List sx={{ bgcolor: 'white', p: 0 }}>

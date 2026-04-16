@@ -74,7 +74,7 @@ const CreatePostPage = () => {
   };
 
   return (
-    <Box sx={{ minHeight: '100vh', bgcolor: 'background.default' }}>
+    <Box sx={{ bgcolor: 'background.default' }}>
       {/* 헤더 */}
       <Box
         sx={{
@@ -90,7 +90,7 @@ const CreatePostPage = () => {
         <IconButton onClick={() => navigate(-1)} sx={{ color: '#FF6B35' }}>
           <ArrowBackIcon />
         </IconButton>
-        <Typography variant="h3" fontWeight={700}>새 게시물</Typography>
+        <Typography variant="h6" fontWeight={700}>새 게시물</Typography>
         <Button
           variant="contained"
           size="small"

@@ -34,7 +34,7 @@ const MyPage = () => {
   if (!user) return null;
 
   return (
-    <Box sx={{ minHeight: '100vh', bgcolor: 'background.default' }}>
+    <Box sx={{ bgcolor: 'background.default' }}>
       {/* 프로필 헤더 */}
       <Box sx={{ bgcolor: 'white', px: 2, pt: 3, pb: 2 }}>
         <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 2 }}>
@@ -47,7 +47,7 @@ const MyPage = () => {
           </IconButton>
         </Box>
 
-        <Typography variant="h3" fontWeight={700} sx={{ mb: 0.5 }}>{user.nickname}</Typography>
+        <Typography variant="h6" fontWeight={700} sx={{ mb: 0.5 }}>{user.nickname}</Typography>
         <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>@{user.username}</Typography>
 
         {/* 팔로우/팔로워 */}

@@ -53,10 +53,9 @@ const PostCard = ({ post, likedPostIds = [], onLikeChange }) => {
     <Box
       sx={{
         bgcolor: 'white',
-        borderRadius: 2,
+        borderRadius: 0,
         overflow: 'hidden',
-        boxShadow: '0 2px 8px rgba(0,0,0,0.06)',
-        mb: 1.5,
+        borderBottom: '8px solid #F5EDE8',
       }}
     >
       {/* 상단: 프로필 + 닉네임 + 위치 */}

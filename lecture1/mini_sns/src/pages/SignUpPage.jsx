@@ -37,36 +37,17 @@ const SignUpPage = () => {
   };
 
   return (
-    // 데스크탑: 오렌지 그라데이션 배경
     <Box
       sx={{
         minHeight: '100vh',
-        bgcolor: 'background.default',
-        '@media (min-width: 481px)': {
-          background: 'linear-gradient(135deg, #FF6B35 0%, #FFB347 100%)',
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'flex-start',
-        },
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'center',
+        alignItems: 'center',
+        px: 3,
+        background: 'linear-gradient(180deg, #FFF0E8 0%, #FFF8F5 100%)',
       }}
     >
-      {/* 앱 프레임 */}
-      <Box
-        sx={{
-          width: '100%',
-          flex: '0 1 480px',
-          minHeight: '100vh',
-          display: 'flex',
-          flexDirection: 'column',
-          justifyContent: 'center',
-          alignItems: 'center',
-          px: 3,
-          background: 'linear-gradient(180deg, #FFF0E8 0%, #FFF8F5 100%)',
-          '@media (min-width: 481px)': {
-            boxShadow: '0 0 60px rgba(0,0,0,0.25)',
-          },
-        }}
-      >
         <Box sx={{ width: '100%', maxWidth: 360 }}>
           {/* 헤더 */}
           <Box sx={{ display: 'flex', alignItems: 'center', mb: 3 }}>
@@ -75,7 +56,7 @@ const SignUpPage = () => {
             </IconButton>
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, ml: 1 }}>
               <RestaurantMenuIcon sx={{ color: '#FF6B35' }} />
-              <Typography variant="h3" sx={{ fontWeight: 700, color: '#FF6B35' }}>
+              <Typography variant="h6" sx={{ fontWeight: 700, color: '#FF6B35' }}>
                 회원가입
               </Typography>
             </Box>
@@ -149,7 +130,6 @@ const SignUpPage = () => {
             </Box>
           </Box>
         </Box>
-      </Box>
     </Box>
   );
 };

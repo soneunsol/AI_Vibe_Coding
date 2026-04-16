@@ -38,11 +38,11 @@ const HomePage = () => {
   }
 
   return (
-    <Box sx={{ px: 0 }}>
+    <Box sx={{ bgcolor: '#F5EDE8' }}>
       {posts.length === 0 ? (
         <Box sx={{ textAlign: 'center', py: 8, px: 3 }}>
-          <Typography variant="h3" sx={{ mb: 1 }}>🍽️</Typography>
-          <Typography variant="h3" color="text.secondary">아직 게시물이 없어요</Typography>
+          <Typography sx={{ mb: 1, fontSize: '3rem' }}>🍽️</Typography>
+          <Typography variant="h6" color="text.secondary">아직 게시물이 없어요</Typography>
           <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
             첫 번째 맛집을 공유해보세요!
           </Typography>
