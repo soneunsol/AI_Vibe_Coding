@@ -12,7 +12,7 @@ jobs:
     steps:
       - name: Ping Supabase Health Check
         run: |
-          curl -s "${{ secrets.VITE_SUPABASE_URL }}/rest/v1/health_check?select=id&limit=1" \
+          curl -s "${{ secrets.VITE_SUPABASE_URL }}/rest/v1/posts?select=id&limit=1" \
             -H "apikey: ${{ secrets.VITE_SUPABASE_ANON_KEY }}" \
             -H "Authorization: Bearer ${{ secrets.VITE_SUPABASE_ANON_KEY }}"
           echo "Supabase ping successful!"
