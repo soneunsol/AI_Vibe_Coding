@@ -5,8 +5,10 @@ import {
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import ChatBubbleOutlineIcon from '@mui/icons-material/ChatBubbleOutline';
+import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import { supabase } from '../../services/supabase';
+import { deleteComment } from '../../services/postService';
 import { useAuth } from '../../store/AuthContext.jsx';
 import CommentModal from './CommentModal.jsx';
 
@@ -28,7 +30,18 @@ const PostCard = ({ post, likedPostIds = [], onLikeChange }) => {
   const comments = post.sns_comments || post.comments || [];
   const [commentCount, setCommentCount] = useState(comments.length);
 
-  const recentComments = comments.slice(-2);
+  const [localComments, setLocalComments] = useState(comments);
+  const recentComments = localComments.slice(-2);
+
+  const handleDeleteComment = async (commentId) => {
+    try {
+      await deleteComment(commentId);
+      setLocalComments(prev => prev.filter(c => c.id !== commentId));
+      setCommentCount(prev => Math.max(0, prev - 1));
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
   const handleLike = async () => {
     if (!user) return;
@@ -120,9 +133,16 @@ const PostCard = ({ post, likedPostIds = [], onLikeChange }) => {
         {recentComments.length > 0 && (
           <Box sx={{ px: 1 }}>
             {recentComments.map((c) => (
-              <Typography key={c.id} variant="caption" display="block" sx={{ color: '#333' }}>
-                <strong>{c.users?.nickname}</strong> {c.content}
-              </Typography>
+              <Box key={c.id} sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+                <Typography variant="caption" sx={{ color: '#333', flex: 1 }}>
+                  <strong>{c.users?.nickname}</strong> {c.content}
+                </Typography>
+                {user && user.id === c.user_id && (
+                  <IconButton size="small" onClick={() => handleDeleteComment(c.id)} sx={{ p: 0.2, color: '#bbb', '&:hover': { color: '#E53935' } }}>
+                    <DeleteOutlineIcon sx={{ fontSize: 14 }} />
+                  </IconButton>
+                )}
+              </Box>
             ))}
           </Box>
         )}
