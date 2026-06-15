@@ -3,5 +3,5 @@ import react from '@vitejs/plugin-react'
 
 export default defineConfig({
   plugins: [react()],
-  base: '/my_ai_web_test/mini_sns/',
+  base: '/AI_Vibe_Coding/mini_sns/',
 })
