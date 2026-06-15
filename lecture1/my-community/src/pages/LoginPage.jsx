@@ -1,14 +1,15 @@
 import { useState } from 'react';
 import {
   Box, Card, CardContent, Typography,
-  TextField, Button, Alert, Link, Collapse,
+  TextField, Button, Alert, Link, Collapse, Divider,
 } from '@mui/material';
 import {
   MarkEmailRead as EmailIcon,
   Refresh as RefreshIcon,
 } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
-import { signIn, resendConfirmationEmail } from '../services/authService';
+import { signIn, signUp, resendConfirmationEmail } from '../services/authService';
+import { seedTestPosts } from '../services/postService';
 import Logo from '../components/common/Logo';
 
 const LoginPage = () => {
@@ -51,6 +52,31 @@ const LoginPage = () => {
       } else {
         setErrorType('other');
         setError(`로그인 실패: ${msg}`);
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleTestLogin = async () => {
+    setLoading(true);
+    setError('');
+    setErrorType('');
+    try {
+      try {
+        await signUp('testuser', 'Test1234!');
+      } catch {}
+      const data = await signIn('testuser', 'Test1234!');
+      await seedTestPosts(data.user.id);
+      navigate('/');
+    } catch (err) {
+      const msg = err?.message || '';
+      if (msg.includes('Email not confirmed')) {
+        setErrorType('unconfirmed');
+        setError('테스트 계정의 이메일 인증이 필요합니다. Supabase 대시보드 > Authentication에서 testuser@devdesignhub.app 계정을 확인해주세요.');
+      } else {
+        setErrorType('other');
+        setError(`테스트 로그인 실패: ${msg}`);
       }
     } finally {
       setLoading(false);
@@ -173,6 +199,20 @@ const LoginPage = () => {
                 회원가입하기
               </Link>
             </Typography>
+
+            <Divider sx={{ my: 1.5 }}>
+              <Typography variant="caption" color="text.secondary">또는</Typography>
+            </Divider>
+
+            <Button
+              fullWidth
+              variant="outlined"
+              onClick={handleTestLogin}
+              disabled={loading}
+              sx={{ py: 1.2, fontWeight: 600 }}
+            >
+              {loading ? '로그인 중...' : '테스트 계정으로 로그인'}
+            </Button>
           </Box>
         </CardContent>
       </Card>

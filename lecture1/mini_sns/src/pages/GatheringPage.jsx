@@ -1,5 +1,6 @@
-import React from 'react';
-import { Box, Typography, Card, CardContent, Button, Chip, Avatar, AvatarGroup } from '@mui/material';
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { Box, Typography, Card, CardContent, Button, Chip, Avatar, AvatarGroup, Snackbar } from '@mui/material';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import PeopleIcon from '@mui/icons-material/People';
@@ -48,6 +49,18 @@ const MOCK_GATHERINGS = [
 ];
 
 const GatheringPage = () => {
+  const navigate = useNavigate();
+  const [snackOpen, setSnackOpen] = useState(false);
+  const [snackMsg, setSnackMsg] = useState('');
+
+  const handleJoin = (gathering) => {
+    setSnackMsg(`"${gathering.title}" 모임에 참가했습니다!`);
+    setSnackOpen(true);
+    setTimeout(() => {
+      navigate(`/chat/${gathering.id}`, { state: { roomName: gathering.title } });
+    }, 800);
+  };
+
   return (
     <Box sx={{ bgcolor: 'background.default', px: 2, py: 2 }}>
       <Box sx={{ mb: 2 }}>
@@ -92,6 +105,7 @@ const GatheringPage = () => {
                 variant="contained"
                 size="small"
                 disabled={gathering.current >= gathering.max}
+                onClick={() => handleJoin(gathering)}
                 sx={{
                   background: gathering.current >= gathering.max
                     ? '#ccc'
@@ -107,6 +121,13 @@ const GatheringPage = () => {
           </CardContent>
         </Card>
       ))}
+      <Snackbar
+        open={snackOpen}
+        autoHideDuration={1500}
+        onClose={() => setSnackOpen(false)}
+        message={snackMsg}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+      />
     </Box>
   );
 };

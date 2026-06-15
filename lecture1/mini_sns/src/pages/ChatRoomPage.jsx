@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams, useLocation } from 'react-router-dom';
 import {
   Box, Typography, TextField, IconButton, Avatar, AppBar, Toolbar,
 } from '@mui/material';
@@ -29,7 +29,8 @@ const ChatRoomPage = () => {
   const [messages, setMessages] = useState(MOCK_MESSAGES);
   const [text, setText] = useState('');
 
-  const roomName = ROOM_NAMES[roomId] || '채팅방';
+  const location = useLocation();
+  const roomName = location.state?.roomName || ROOM_NAMES[roomId] || '채팅방';
 
   const handleSend = () => {
     if (!text.trim()) return;

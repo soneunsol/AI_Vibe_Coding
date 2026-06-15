@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import {
-  Box, TextField, Button, Typography, Alert, CircularProgress,
+  Box, TextField, Button, Typography, Alert, CircularProgress, Divider,
 } from '@mui/material';
 import RestaurantMenuIcon from '@mui/icons-material/RestaurantMenu';
-import { signIn } from '../services/authService';
+import { signIn, signUp } from '../services/authService';
+import { seedTestPosts } from '../services/postService';
 import { useAuth } from '../store/AuthContext.jsx';
 
 const LoginPage = () => {
@@ -15,6 +16,24 @@ const LoginPage = () => {
   const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
+
+  const handleTestLogin = async () => {
+    setError('');
+    setLoading(true);
+    try {
+      try {
+        await signUp({ username: 'test', password: 'test1234', nickname: '맛집탐험가' });
+      } catch {}
+      const user = await signIn({ username: 'test', password: 'test1234' });
+      login(user);
+      await seedTestPosts(user.id);
+      navigate('/');
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -138,6 +157,26 @@ const LoginPage = () => {
               </Link>
             </Typography>
           </Box>
+
+          <Divider sx={{ my: 2 }}>
+            <Typography variant="caption" color="text.secondary">또는</Typography>
+          </Divider>
+
+          <Button
+            fullWidth
+            variant="outlined"
+            onClick={handleTestLogin}
+            disabled={loading}
+            sx={{
+              py: 1.2,
+              borderColor: '#FFB347',
+              color: '#FF6B35',
+              fontWeight: 600,
+              '&:hover': { borderColor: '#FF6B35', bgcolor: '#FFF0E8' },
+            }}
+          >
+            {loading ? <CircularProgress size={20} color="inherit" /> : '테스트 계정으로 로그인'}
+          </Button>
         </Box>
     </Box>
   );

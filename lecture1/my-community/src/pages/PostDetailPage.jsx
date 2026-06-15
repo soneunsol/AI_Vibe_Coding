@@ -55,6 +55,8 @@ const PostDetailPage = () => {
         await addLike(id, user.id);
         setLikes((prev) => [...prev, { user_id: user.id }]);
       }
+    } catch (err) {
+      setError('좋아요 처리에 실패했습니다. (RLS 정책을 확인해주세요)');
     } finally {
       setLikeLoading(false);
     }

@@ -65,3 +65,15 @@ export const getCurrentUser = () => {
   const stored = localStorage.getItem('matsagram_user');
   return stored ? JSON.parse(stored) : null;
 };
+
+export const updateProfile = async (userId, updates) => {
+  const { data, error } = await supabase
+    .from('users')
+    .update(updates)
+    .eq('id', userId)
+    .select()
+    .single();
+  if (error) throw error;
+  localStorage.setItem('matsagram_user', JSON.stringify(data));
+  return data;
+};

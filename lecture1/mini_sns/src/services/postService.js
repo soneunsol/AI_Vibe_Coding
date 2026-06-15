@@ -96,6 +96,50 @@ export const fetchUserPosts = async (userId) => {
   return data;
 };
 
+export const seedTestPosts = async (userId) => {
+  const { data: existing } = await supabase
+    .from('sns_posts')
+    .select('id')
+    .eq('user_id', userId)
+    .limit(1);
+  if (existing && existing.length > 0) return;
+
+  await supabase.from('sns_posts').insert([
+    {
+      user_id: userId,
+      image_url: 'https://picsum.photos/seed/sushi2024/400/400',
+      caption: '오늘의 점심! 한남동 오마카세 🍣 신선한 회가 입에서 녹아요~',
+      hashtags: ['오마카세', '한남동맛집', '스시'],
+      location: '한남동',
+      like_count: 12,
+    },
+    {
+      user_id: userId,
+      image_url: 'https://picsum.photos/seed/ramen2024/400/400',
+      caption: '홍대 골목 숨은 라멘 맛집 발견! 🍜 진한 돈코츠 육수가 최고',
+      hashtags: ['라멘', '홍대맛집', '돈코츠'],
+      location: '홍대입구',
+      like_count: 8,
+    },
+    {
+      user_id: userId,
+      image_url: 'https://picsum.photos/seed/brunch2024/400/400',
+      caption: '주말 브런치 타임 ☕ 에그베네딕트와 아메리카노 조합은 진리',
+      hashtags: ['브런치', '카페', '주말'],
+      location: '이태원',
+      like_count: 15,
+    },
+    {
+      user_id: userId,
+      image_url: 'https://picsum.photos/seed/korean2024/400/400',
+      caption: '을지로 노포 감성 가득한 곰탕집 🍲 40년 전통의 깊은 맛!',
+      hashtags: ['한식', '을지로맛집', '곰탕'],
+      location: '을지로3가',
+      like_count: 20,
+    },
+  ]);
+};
+
 export const getUserLikedPosts = async (userId) => {
   const { data, error } = await supabase
     .from('sns_likes')

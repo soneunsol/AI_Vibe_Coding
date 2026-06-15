@@ -2,14 +2,17 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   Box, Avatar, Typography, Button, Grid, CircularProgress,
-  Modal, IconButton, Divider,
+  Modal, IconButton, Divider, Dialog, DialogTitle, DialogContent,
+  DialogActions, TextField,
 } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import LogoutIcon from '@mui/icons-material/Logout';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import ChatBubbleIcon from '@mui/icons-material/ChatBubble';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
+import RefreshIcon from '@mui/icons-material/Refresh';
 import { fetchUserPosts } from '../services/postService';
+import { updateProfile } from '../services/authService';
 import { useAuth } from '../store/AuthContext.jsx';
 
 const MyPage = () => {
@@ -18,6 +21,10 @@ const MyPage = () => {
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedPost, setSelectedPost] = useState(null);
+  const [editOpen, setEditOpen] = useState(false);
+  const [editNickname, setEditNickname] = useState('');
+  const [editImage, setEditImage] = useState('');
+  const [saving, setSaving] = useState(false);
 
   useEffect(() => {
     if (!user) return;
@@ -29,6 +36,34 @@ const MyPage = () => {
   const handleLogout = () => {
     logout();
     navigate('/login');
+  };
+
+  const handleEditOpen = () => {
+    setEditNickname(user.nickname);
+    setEditImage(user.profile_image_url);
+    setEditOpen(true);
+  };
+
+  const handleRandomImage = () => {
+    const seed = Math.random().toString(36).substring(7);
+    setEditImage(`https://api.dicebear.com/7.x/adventurer/svg?seed=${seed}`);
+  };
+
+  const handleEditSave = async () => {
+    if (!editNickname.trim()) return;
+    setSaving(true);
+    try {
+      const updated = await updateProfile(user.id, {
+        nickname: editNickname.trim(),
+        profile_image_url: editImage,
+      });
+      login(updated);
+      setEditOpen(false);
+    } catch {
+      alert('프로필 수정에 실패했습니다.');
+    } finally {
+      setSaving(false);
+    }
   };
 
   if (!user) return null;
@@ -69,6 +104,7 @@ const MyPage = () => {
         <Button
           variant="outlined"
           fullWidth
+          onClick={handleEditOpen}
           sx={{ borderColor: '#FF6B35', color: '#FF6B35', borderRadius: 2 }}
         >
           프로필 편집
@@ -108,6 +144,41 @@ const MyPage = () => {
           ))}
         </Grid>
       )}
+
+      {/* 프로필 편집 다이얼로그 */}
+      <Dialog open={editOpen} onClose={() => setEditOpen(false)} fullWidth maxWidth="xs">
+        <DialogTitle sx={{ fontWeight: 700 }}>프로필 편집</DialogTitle>
+        <DialogContent>
+          <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2, pt: 1 }}>
+            <Avatar src={editImage} sx={{ width: 80, height: 80, border: '3px solid #FF6B35' }} />
+            <Button
+              size="small"
+              startIcon={<RefreshIcon />}
+              onClick={handleRandomImage}
+              sx={{ color: '#FF6B35' }}
+            >
+              프로필 이미지 변경
+            </Button>
+            <TextField
+              fullWidth
+              label="닉네임"
+              value={editNickname}
+              onChange={(e) => setEditNickname(e.target.value)}
+            />
+          </Box>
+        </DialogContent>
+        <DialogActions sx={{ px: 3, pb: 2 }}>
+          <Button onClick={() => setEditOpen(false)} color="inherit">취소</Button>
+          <Button
+            onClick={handleEditSave}
+            variant="contained"
+            disabled={saving || !editNickname.trim()}
+            sx={{ background: 'linear-gradient(135deg, #FF6B35, #FFB347)' }}
+          >
+            {saving ? '저장 중...' : '저장'}
+          </Button>
+        </DialogActions>
+      </Dialog>
 
       {/* 게시물 상세 모달 */}
       <Modal open={!!selectedPost} onClose={() => setSelectedPost(null)}>
