@@ -5,7 +5,8 @@ import {
 } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import SendIcon from '@mui/icons-material/Send';
-import { fetchComments, addComment } from '../../services/postService';
+import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
+import { fetchComments, addComment, deleteComment } from '../../services/postService';
 import { useAuth } from '../../store/AuthContext.jsx';
 
 const formatTime = (dateStr) => {
@@ -46,6 +47,16 @@ const CommentModal = ({ open, onClose, postId, onCommentAdded }) => {
       console.error(err);
     } finally {
       setSubmitting(false);
+    }
+  };
+
+  const handleDelete = async (commentId) => {
+    try {
+      await deleteComment(commentId);
+      setComments(prev => prev.filter(c => c.id !== commentId));
+      if (onCommentAdded) onCommentAdded();
+    } catch (err) {
+      console.error(err);
     }
   };
 
@@ -99,6 +110,15 @@ const CommentModal = ({ open, onClose, postId, onCommentAdded }) => {
                 </Box>
                 <Typography variant="body2">{comment.content}</Typography>
               </Box>
+              {user && user.id === comment.user_id && (
+                <IconButton
+                  size="small"
+                  onClick={() => handleDelete(comment.id)}
+                  sx={{ color: '#999', '&:hover': { color: '#E53935' } }}
+                >
+                  <DeleteOutlineIcon sx={{ fontSize: 18 }} />
+                </IconButton>
+              )}
             </Box>
           ))
         )}

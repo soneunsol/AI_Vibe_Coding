@@ -74,6 +74,11 @@ export const addComment = async ({ postId, userId, content }) => {
   return data;
 };
 
+export const deleteComment = async (commentId) => {
+  const { error } = await supabase.from('sns_comments').delete().eq('id', commentId);
+  if (error) throw error;
+};
+
 export const fetchComments = async (postId) => {
   const { data, error } = await supabase
     .from('sns_comments')
