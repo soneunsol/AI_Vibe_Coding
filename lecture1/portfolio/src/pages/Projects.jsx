@@ -14,8 +14,12 @@ import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 import { supabase } from '../services/supabase';
 
+const fixLegacyUrl = (url) =>
+  url ? url.replace(/\/my_ai_web_test\//g, '/AI_Vibe_Coding/') : url;
+
 const ProjectCard = ({ project }) => {
-  const thumbnailUrl = project.thumbnail_url || `https://image.thum.io/get/${project.detail_url}`;
+  const detailUrl = fixLegacyUrl(project.detail_url);
+  const thumbnailUrl = fixLegacyUrl(project.thumbnail_url) || `https://image.thum.io/get/${detailUrl}`;
   const [imgError, setImgError] = useState(false);
 
   const formattedDate = new Date(project.created_at).toLocaleDateString('ko-KR', {
@@ -125,7 +129,7 @@ const ProjectCard = ({ project }) => {
           variant="outlined"
           size="small"
           endIcon={<OpenInNewIcon sx={{ fontSize: 14 }} />}
-          href={project.detail_url}
+          href={detailUrl}
           target="_blank"
           rel="noopener noreferrer"
           fullWidth
