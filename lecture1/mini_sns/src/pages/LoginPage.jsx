@@ -162,21 +162,37 @@ const LoginPage = () => {
             <Typography variant="caption" color="text.secondary">또는</Typography>
           </Divider>
 
-          <Button
-            fullWidth
-            variant="outlined"
-            onClick={handleTestLogin}
-            disabled={loading}
+          <Box
             sx={{
-              py: 1.2,
-              borderColor: '#FFB347',
-              color: '#FF6B35',
-              fontWeight: 600,
-              '&:hover': { borderColor: '#FF6B35', bgcolor: '#FFF0E8' },
+              p: 2,
+              bgcolor: '#FFF8F0',
+              borderRadius: 2,
+              border: '1px dashed #FFB347',
             }}
           >
-            {loading ? <CircularProgress size={20} color="inherit" /> : '테스트 계정으로 로그인'}
-          </Button>
+            <Typography variant="caption" sx={{ color: '#FF6B35', fontWeight: 600, display: 'block', mb: 1 }}>
+              테스트 계정 정보
+            </Typography>
+            <Typography variant="caption" sx={{ color: 'text.secondary', display: 'block' }}>
+              아이디: <b>test</b> / 비밀번호: <b>test1234</b>
+            </Typography>
+            <Button
+              fullWidth
+              variant="outlined"
+              onClick={handleTestLogin}
+              disabled={loading}
+              sx={{
+                mt: 1.5,
+                py: 1.2,
+                borderColor: '#FFB347',
+                color: '#FF6B35',
+                fontWeight: 600,
+                '&:hover': { borderColor: '#FF6B35', bgcolor: '#FFF0E8' },
+              }}
+            >
+              {loading ? <CircularProgress size={20} color="inherit" /> : '테스트 계정으로 바로 로그인'}
+            </Button>
+          </Box>
         </Box>
     </Box>
   );

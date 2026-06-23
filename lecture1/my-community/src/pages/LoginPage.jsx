@@ -204,15 +204,30 @@ const LoginPage = () => {
               <Typography variant="caption" color="text.secondary">또는</Typography>
             </Divider>
 
-            <Button
-              fullWidth
-              variant="outlined"
-              onClick={handleTestLogin}
-              disabled={loading}
-              sx={{ py: 1.2, fontWeight: 600 }}
+            <Box
+              sx={{
+                p: 2,
+                bgcolor: 'rgba(99,102,241,0.04)',
+                borderRadius: 2,
+                border: '1px dashed rgba(99,102,241,0.3)',
+              }}
             >
-              {loading ? '로그인 중...' : '테스트 계정으로 로그인'}
-            </Button>
+              <Typography variant="caption" sx={{ color: 'primary.main', fontWeight: 600, display: 'block', mb: 1 }}>
+                테스트 계정 정보
+              </Typography>
+              <Typography variant="caption" sx={{ color: 'text.secondary', display: 'block' }}>
+                아이디: <b>testuser</b> / 비밀번호: <b>Test1234!</b>
+              </Typography>
+              <Button
+                fullWidth
+                variant="outlined"
+                onClick={handleTestLogin}
+                disabled={loading}
+                sx={{ mt: 1.5, py: 1.2, fontWeight: 600 }}
+              >
+                {loading ? '로그인 중...' : '테스트 계정으로 바로 로그인'}
+              </Button>
+            </Box>
           </Box>
         </CardContent>
       </Card>
