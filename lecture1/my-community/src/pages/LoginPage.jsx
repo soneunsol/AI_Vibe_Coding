@@ -1,11 +1,12 @@
 import { useState } from 'react';
 import {
   Box, Card, CardContent, Typography,
-  TextField, Button, Alert, Link, Collapse, Divider,
+  TextField, Button, Alert, Link, Collapse, Divider, IconButton,
 } from '@mui/material';
 import {
   MarkEmailRead as EmailIcon,
   Refresh as RefreshIcon,
+  Close as CloseIcon,
 } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 import { signIn, signUp, resendConfirmationEmail } from '../services/authService';
@@ -114,8 +115,21 @@ const LoginPage = () => {
           borderRadius: 3,
           boxShadow: '0 20px 60px rgba(99,102,241,0.12), 0 4px 16px rgba(0,0,0,0.06)',
           border: '1px solid rgba(99,102,241,0.1)',
+          position: 'relative',
         }}
       >
+        <IconButton
+          onClick={() => navigate(-1)}
+          sx={{
+            position: 'absolute',
+            top: 8,
+            right: 8,
+            color: 'text.secondary',
+            zIndex: 1,
+          }}
+        >
+          <CloseIcon />
+        </IconButton>
         <CardContent sx={{ p: { xs: 3, sm: 4 } }}>
           <Logo variant="login" />
 

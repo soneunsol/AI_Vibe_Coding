@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import {
-  Box, TextField, Button, Typography, Alert, CircularProgress, Divider,
+  Box, TextField, Button, Typography, Alert, CircularProgress, Divider, IconButton,
 } from '@mui/material';
 import RestaurantMenuIcon from '@mui/icons-material/RestaurantMenu';
+import CloseIcon from '@mui/icons-material/Close';
 import { signIn, signUp } from '../services/authService';
 import { seedTestPosts } from '../services/postService';
 import { useAuth } from '../store/AuthContext.jsx';
@@ -109,8 +110,20 @@ const LoginPage = () => {
             borderRadius: 3,
             p: 3,
             boxShadow: '0 4px 20px rgba(0,0,0,0.08)',
+            position: 'relative',
           }}
         >
+          <IconButton
+            onClick={() => navigate(-1)}
+            sx={{
+              position: 'absolute',
+              top: 8,
+              right: 8,
+              color: 'text.secondary',
+            }}
+          >
+            <CloseIcon />
+          </IconButton>
           {error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}
 
           <TextField
