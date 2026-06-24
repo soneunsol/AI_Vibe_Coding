@@ -46,7 +46,7 @@ const ChatRoomPage = () => {
   };
 
   return (
-    <Box sx={{ display: 'flex', flexDirection: 'column', height: '100vh', bgcolor: '#FFF8F5' }}>
+    <Box sx={{ display: 'flex', flexDirection: 'column', height: '100%', minHeight: 0, bgcolor: '#FFF8F5' }}>
       {/* 상단바 */}
       <AppBar position="static" elevation={0} sx={{ bgcolor: 'white', borderBottom: '1px solid rgba(255,107,53,0.15)' }}>
         <Toolbar sx={{ minHeight: 56 }}>

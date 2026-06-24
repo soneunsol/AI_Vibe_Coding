@@ -16,7 +16,7 @@ const MainLayout = () => {
       }}
     >
       <NavBar />
-      <Box component="main" sx={{ flex: 1, overflowY: 'auto' }}>
+      <Box component="main" sx={{ flex: 1, overflowY: 'auto', minHeight: 0 }}>
         <Outlet />
       </Box>
       <BottomNav />
