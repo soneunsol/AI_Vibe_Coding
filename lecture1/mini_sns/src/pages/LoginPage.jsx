@@ -124,6 +124,8 @@ const LoginPage = () => {
           >
             <CloseIcon />
           </IconButton>
+
+          <Box sx={{ pt: 3 }}>
           {error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}
 
           <TextField
@@ -205,6 +207,7 @@ const LoginPage = () => {
             >
               {loading ? <CircularProgress size={20} color="inherit" /> : '테스트 계정으로 바로 로그인'}
             </Button>
+          </Box>
           </Box>
         </Box>
     </Box>

@@ -2,10 +2,18 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { AppBar, Toolbar, Typography, IconButton, Box } from '@mui/material';
 import NotificationsNoneIcon from '@mui/icons-material/NotificationsNone';
+import LogoutIcon from '@mui/icons-material/Logout';
 import RestaurantMenuIcon from '@mui/icons-material/RestaurantMenu';
+import { useAuth } from '../../store/AuthContext.jsx';
 
 const NavBar = () => {
   const navigate = useNavigate();
+  const { logout } = useAuth();
+
+  const handleLogout = () => {
+    logout();
+    navigate('/login');
+  };
 
   return (
     <AppBar
@@ -52,10 +60,15 @@ const NavBar = () => {
           </Typography>
         </Box>
 
-        {/* 알림 아이콘 */}
-        <IconButton onClick={() => navigate('/notifications')} sx={{ color: '#FF6B35' }}>
-          <NotificationsNoneIcon />
-        </IconButton>
+        {/* 알림 & 로그아웃 */}
+        <Box sx={{ display: 'flex', alignItems: 'center' }}>
+          <IconButton onClick={() => navigate('/notifications')} sx={{ color: '#FF6B35' }}>
+            <NotificationsNoneIcon />
+          </IconButton>
+          <IconButton onClick={handleLogout} sx={{ color: '#FF6B35' }}>
+            <LogoutIcon />
+          </IconButton>
+        </Box>
       </Toolbar>
     </AppBar>
   );
