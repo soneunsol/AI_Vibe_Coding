@@ -178,7 +178,12 @@ const Projects = () => {
           .order('sort_order', { ascending: true });
 
         if (supabaseError) throw supabaseError;
-        setProjects(data || []);
+        const fixed = (data || []).map(p => ({
+          ...p,
+          detail_url: p.detail_url?.replace('/AI_Vibe_Coding/', '/ai-vibe-coding/'),
+          thumbnail_url: p.thumbnail_url?.replace('/AI_Vibe_Coding/', '/ai-vibe-coding/'),
+        }));
+        setProjects(fixed);
       } catch (err) {
         setError(err.message);
       } finally {
