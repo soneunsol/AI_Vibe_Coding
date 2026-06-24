@@ -30,7 +30,7 @@ const ProtectedRoute = ({ children }) => {
 
 const App = () => {
   return (
-    <BrowserRouter basename="/AI_Vibe_Coding/mini_sns">
+    <BrowserRouter basename="/ai-vibe-coding/mini_sns">
       <Routes>
         <Route path="/login" element={<LoginPage />} />
         <Route path="/signup" element={<SignUpPage />} />

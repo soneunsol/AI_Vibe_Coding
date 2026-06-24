@@ -9,7 +9,7 @@ import './index.css';
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
-    <BrowserRouter basename="/AI_Vibe_Coding">
+    <BrowserRouter basename="/ai-vibe-coding">
       <ThemeProvider theme={theme}>
         <CssBaseline />
         <App />
