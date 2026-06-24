@@ -287,7 +287,15 @@ const PostDetailPage = () => {
               variant="contained"
               onClick={handleAddComment}
               disabled={submitting || !newComment.trim()}
-              sx={{ whiteSpace: 'nowrap', px: 2.5 }}
+              sx={{
+                whiteSpace: 'nowrap',
+                px: 2.5,
+                color: '#ffffff',
+                background: 'linear-gradient(135deg, #6366f1 0%, #4f46e5 100%)',
+                '&:hover': {
+                  background: 'linear-gradient(135deg, #818cf8 0%, #6366f1 100%)',
+                },
+              }}
             >
               등록
             </Button>
